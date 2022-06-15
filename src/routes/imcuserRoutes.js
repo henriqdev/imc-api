@@ -9,9 +9,9 @@ const {
 
 router.post('/create', create)
 
-router.get('/getMany', getMany)
+router.get('/getmany', getMany)
 
-router.get('/getIndex', getIndex)
+router.get('/getindex', getIndex)
 
 router.patch('/modify', modify)
 

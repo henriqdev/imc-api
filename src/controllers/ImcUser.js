@@ -2,16 +2,22 @@ const {
   ImcUsers
 } = require('../models')
 const db = require('../models')
-// const { ValidationError } = require('sequelize')
+const { formulaIMC } = require('./factory/CalculateMain')
+const { ValidationError } = require('sequelize')
 // const Op = db.Sequelize.Op
 
 const create = async (req, res) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
+      const {
+        height,
+        weight
+      } = req.body
+      const res = formulaIMC(height, weight)
+      console.log(res)
       const data = await ImcUsers.create(req.body, {
         transaction: t
       })
-      console.log(db)
       return data
     })
 
@@ -143,61 +149,45 @@ const modify = async () => {
   // }
 }
 
-const getMany = async () => {
-  // try {
-  //   const result = await db.sequelize.transaction(async (t) => {
-  //     const {
-  //       status,
-  //       cnevento
-  //     } = req.query
-  //     const where = ArrayToWhere([
-  //       { cnevento },
-  //       { status }
-  //     ])
+const getMany = async (req, res) => {
+  try {
+    const result = await db.sequelize.transaction(async (t) => {
 
-  //     const data = await eventos_brindes.findAll({
-  //       where: {
-  //         ...where
-  //       },
-  //       include: [{
-  //         model: produtos,
-  //         as: 'produto'
-  //       }],
-  //       order: [['valorminimovenda', 'ASC']],
-  //       transaction: t
-  //     })
-  //     if (data.length <= 0) {
-  //       throw new ValidationError('Erro', [
-  //         {
-  //           message: 'Nenhuma brinde encontrado'
-  //         }
-  //       ])
-  //     }
-  //     return data
-  //   })
-  //   return res
-  //     .status(200)
-  //     .send({
-  //       status: 200,
-  //       response: result,
-  //       message: 'Busca efetuada'
-  //     })
-  // } catch (error) {
-  //   console.error(error)
-  //   const msgerro = []
-  //   for (const e in error.errors) {
-  //     msgerro.push({
-  //       others: null,
-  //       message: error.errors[e].message
-  //     })
-  //   }
-  //   return res
-  //     .status(400)
-  //     .send({
-  //       messageMain: 'Encontramos alguns erros',
-  //       errors: msgerro
-  //     })
-  // }
+      const data = await ImcUsers.findAll({
+        transaction: t
+      })
+      if (data.length <= 0) {
+        throw new ValidationError('Erro', [
+          {
+            message: 'Nenhuma registro encontrado'
+          }
+        ])
+      }
+      return data
+    })
+    return res
+      .status(200)
+      .send({
+        status: 200,
+        response: result,
+        message: 'Busca efetuada'
+      })
+  } catch (error) {
+    console.error(error)
+    const msgerro = []
+    for (const e in error.errors) {
+      msgerro.push({
+        others: null,
+        message: error.errors[e].message
+      })
+    }
+    return res
+      .status(400)
+      .send({
+        messageMain: 'Encontramos alguns erros',
+        errors: msgerro
+      })
+  }
 }
 
 module.exports = {
