@@ -4,11 +4,21 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node ./bin/www --ignore ./__test__",
+    "start:dev": "nodemon ./bin/www --ignore ./__test__",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.20.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.17.0",
+    "nodemon": "^2.0.16",
+    "sequelize-cli": "^6.4.1"
   }
 }
