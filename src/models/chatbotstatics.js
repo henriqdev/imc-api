@@ -15,8 +15,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   ChatBotStatics.init({
     answerMain: DataTypes.STRING,
-    keywords: DataTypes.STRING, // mudar para TEXT
+    keywords: DataTypes.TEXT, // mudar para TEXT
     stepFlow: DataTypes.STRING(2),
+    typeInput: {
+      type: DataTypes.ENUM,
+      values: ['TEXT', 'CHECK', 'NUMBER'],
+      defaultValue: 'TEXT'
+    },
     answerDescription: DataTypes.STRING
   }, {
     sequelize,

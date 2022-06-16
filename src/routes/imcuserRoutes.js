@@ -4,10 +4,10 @@ const {
   getMany,
   getIndex,
   modify,
-  create
+  // create
 } = require('../controllers/ImcUser')
 
-router.post('/create', create)
+// router.post('/create', create)
 
 router.get('/getmany', getMany)
 

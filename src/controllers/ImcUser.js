@@ -2,48 +2,21 @@ const {
   ImcUsers
 } = require('../models')
 const db = require('../models')
-const { formulaIMC } = require('./factory/CalculateMain')
 const { ValidationError } = require('sequelize')
 // const Op = db.Sequelize.Op
 
-const create = async (req, res) => {
-  try {
-    const result = await db.sequelize.transaction(async (t) => {
-      const {
-        height,
-        weight
-      } = req.body
-      const res = formulaIMC(height, weight)
-      console.log(res)
-      const data = await ImcUsers.create(req.body, {
-        transaction: t
-      })
-      return data
-    })
-
-    return res
-      .status(201)
-      .send({
-        status: 201,
-        response: result,
-        message: 'Cadastrado com sucesso'
-      })
-  } catch (error) {
-    console.error(error)
-    const msgerro = []
-    for (const e in error.errors) {
-      msgerro.push({
-        others: null,
-        message: error.errors[e].message
-      })
-    }
-    return res
-      .status(400)
-      .send({
-        messageMain: 'Encontramos alguns erros',
-        errors: msgerro
-      })
+const createUser = async (body, t) => {
+  console.log(body)
+  const bodyUser = {
+    name: body.name,
+    age: body.age,
+    height: body.height,
+    weight: body.weight
   }
+  const data = await ImcUsers.create(bodyUser, {
+    transaction: t
+  })
+  return data
 }
 
 const getIndex = async () => {
@@ -194,5 +167,5 @@ module.exports = {
   getMany,
   getIndex,
   modify,
-  create
+  createUser
 }

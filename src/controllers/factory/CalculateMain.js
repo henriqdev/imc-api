@@ -1,7 +1,7 @@
 
 
 const formulaIMC = (peso, altura) => {
-  return parseFloat(peso / (altura * 2)).toFixed(2)
+  return parseFloat((peso / (altura * altura))).toFixed(1)
 }
 
 module.exports = {

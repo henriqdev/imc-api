@@ -2,7 +2,9 @@ const {
   ChatBotStatics
 } = require('../../models')
 const db = require('../../models')
-// const { formulaIMC } = require('./factory/CalculateMain')
+const { formulaIMC } = require('../factory/CalculateMain')
+const { createUser } = require('../ImcUser')
+
 const { ValidationError } = require('sequelize')
 const Op = db.Sequelize.Op
 
@@ -21,13 +23,16 @@ const seekAnswer = async (req, res) => {
         },
         transaction: t
       })
-      if (data.length <= 0) {
+      if (!data) {
         throw new ValidationError('Erro', [
           {
-            message: 'Desculpe, estou aprendendo e não entendi oque vc quis dizer!'
+            message: 'Desculpe, estou aprendendo e não entendi você!'
           }
         ])
       }
+      const { user, answerMODIFY } = await switchData(req, data, t)
+      data.user = user
+      data.answerMain = answerMODIFY
       return data
     })
     return res
@@ -53,6 +58,20 @@ const seekAnswer = async (req, res) => {
         errors: msgerro
       })
   }
+}
+
+async function switchData (req, answerBOT, t) {
+  const { stepflow } = req.body
+  let user, answerMODIFY;
+  switch (stepflow) {
+    case 'F': // peso e finaliza
+      user = await createUser(req.body.user, t)
+      answerMODIFY = answerBOT.answerMain.replace(/#/i, formulaIMC(user.weight, user.height))
+      break
+      default:
+        answerMODIFY = answerBOT.answerMain
+  }
+  return { user, answerMODIFY }
 }
 
 module.exports = {
