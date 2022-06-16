@@ -1,9 +1,14 @@
-// const express = require('express')
-// const router = express.Router()
-// const {
-//   refreshToken
-// } = require('../controller/auth')
+const express = require('express')
+const router = express.Router()
+const {
+  create,
+  modify
+} = require('../controllers/MaintenanceChatBot')
+const { seekAnswer } = require('../controllers/factory/QuestionAnalyzer')
 
-// router.post('/ensureauth', refreshToken)
+router.post('/create', create)
+router.patch('/modify/:id', modify)
 
-// module.exports = router
+router.post('/answer', seekAnswer)
+
+module.exports = router
