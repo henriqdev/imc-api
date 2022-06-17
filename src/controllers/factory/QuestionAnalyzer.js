@@ -11,15 +11,22 @@ const Op = db.Sequelize.Op
 const seekAnswer = async (req, res) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
+      let questionAcept = true;
       const { stepflow, question } = req.body
+      console.log(stepflow, question)
+      // if para ignorar a question que virá do usuario
+      // e busca a proxima pergutna com base no stepFlow
+      if (stepflow == '3' || stepflow == '4' || stepflow == '5' || stepflow == 'F' ) {
+        questionAcept = false
+      }
       const data = await ChatBotStatics.findOne({
         where: {
           stepFlow: {
             [Op.eq]: stepflow
           },
-          keywords: {
+          keywords: questionAcept ? {
             [Op.like]: `%${question}%`
-          }
+          } : ''
         },
         transaction: t
       })
